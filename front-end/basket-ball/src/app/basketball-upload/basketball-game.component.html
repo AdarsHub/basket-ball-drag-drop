@@ -1,0 +1,172 @@
+
+<div class="game-container">
+
+  <!-- Header -->
+  <div class="game-header">
+    <div>
+      <h2>Basketball Challenge 🏀</h2>
+      <p>Hold an item, aim and shoot into the basket!</p>
+    </div>
+
+    <button class="reset-btn" (click)="resetGame()">
+      ↻ Reset
+    </button>
+  </div>
+
+  <!-- Scoreboard -->
+  <div class="score-board">
+
+    <div class="score-card">
+      <span>🏀 Score</span>
+      <strong>{{ score }}</strong>
+    </div>
+
+    <div class="score-card">
+      <span>❌ Misses</span>
+      <strong>{{ misses }}</strong>
+    </div>
+
+    <div class="score-card">
+      <span>🎯 Remaining</span>
+      <strong>{{ items.length - score }}</strong>
+    </div>
+
+  </div>
+
+  <!-- Draggable items -->
+  <div class="items-section">
+
+    <h3>Pick an item</h3>
+
+    <div class="items-grid">
+
+      @for (item of items; track item.id) {
+
+        <button
+          type="button"
+          class="draggable-item"
+          [class.item-scored]="item.scored"
+          [class.item-selected]="activeItem?.id === item.id"
+          [disabled]="item.scored"
+          (pointerdown)="startDrag($event, item)">
+
+          <span class="item-icon">{{ item.icon }}</span>
+
+          <span class="item-label">
+            {{ item.label }}
+          </span>
+
+          @if (item.scored) {
+            <span class="success-check">✓</span>
+          }
+
+        </button>
+
+      }
+
+    </div>
+
+  </div>
+
+  <!-- Basketball court -->
+  <div class="court">
+
+    <div class="court-label">
+      BASKETBALL COURT
+    </div>
+
+    <!-- Trajectory dots -->
+    @if (isDragging) {
+
+      <div class="trajectory-layer">
+
+        @for (dot of trajectoryDots; track $index) {
+
+          <span
+            class="trajectory-dot"
+            [style.left.px]="dot.x"
+            [style.top.px]="dot.y"
+            [style.opacity]="dot.opacity">
+          </span>
+
+        }
+
+      </div>
+
+    }
+
+    <!-- Basket -->
+    <div
+      #basket
+      class="basket-target"
+      [class.basket-active]="isDragging"
+      [class.basket-scored]="isScoring">
+
+      <div class="backboard"></div>
+
+      <div class="backboard-square"></div>
+
+      <div class="hoop-rim"></div>
+
+      <div class="hoop-net">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+
+    </div>
+
+    <!-- Court floor -->
+    <div class="court-floor"></div>
+
+    @if (isDragging) {
+      <div class="aiming-message">
+        AIM YOUR SHOT 🎯
+      </div>
+    }
+
+    @if (isScoring) {
+      <div class="score-message">
+        SWISH! 🔥
+      </div>
+    }
+
+    @if (isReturning) {
+      <div class="miss-message">
+        MISSED! TRY AGAIN
+      </div>
+    }
+
+  </div>
+
+  <!-- Mouse following element -->
+  @if (activeItem) {
+
+    <div
+      class="drag-ghost"
+      [class.flying]="isFlying && !isReturning"
+      [class.returning]="isReturning"
+      [class.scoring]="isScoring"
+      [style.left.px]="pointerX"
+      [style.top.px]="pointerY">
+
+      <span>{{ activeItem.icon }}</span>
+
+      <small>{{ activeItem.label }}</small>
+
+    </div>
+
+  }
+
+  <!-- Instructions -->
+  <div class="game-instructions">
+    <span>🖱️ Hold</span>
+    <span>→</span>
+    <span>🎯 Aim</span>
+    <span>→</span>
+    <span>🏀 Release</span>
+  </div>
+
+</div>

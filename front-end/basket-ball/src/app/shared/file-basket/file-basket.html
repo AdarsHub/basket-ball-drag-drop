@@ -1,0 +1,31 @@
+<div class="file-list">
+  @for (file of selectedFiles; track file) {
+    <div
+      class="file-card"
+      cdkDrag
+      [cdkDragData]="file">
+
+      <mat-icon>description</mat-icon>
+      <span>{{ file.name }}</span>
+
+      <ng-template cdkDragPreview>
+        <div class="drag-preview">
+          <mat-icon>description</mat-icon>
+          {{ file.name }}
+        </div>
+      </ng-template>
+
+    </div>
+  }
+</div>
+
+<div
+  class="basket-area"
+  cdkDropList
+  [cdkDropListData]="selectedFiles"
+  (cdkDropListDropped)="onBasketDrop($event)">
+
+  <mat-icon>sports_basketball</mat-icon>
+  <h3>Drop into Basket</h3>
+
+</div>
